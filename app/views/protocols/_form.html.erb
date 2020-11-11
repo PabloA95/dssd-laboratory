@@ -15,16 +15,38 @@
     <%= form.label :name %>
     <%= form.text_field :name %>
   </div>
-  <!-- <div class="field">
-    <input type="text" name="protocol[aaa][1]" id="protocol_aaa1" value="1">
-  </div>
-  <div class="field">
-    <input type="text" name="protocol[aaa][2]" id="protocol_aaa2" value="2">
-  </div> -->
+
   <div class="field">
     <%= form.label :local %>
     <%= form.check_box :local %>
   </div>
+
+<!-- Inicio formulario para las actividades -->
+  <div class="field" id="actividades">
+    <h3>Agregar actividades</h3>
+    <div class="field">
+      <input type="text" name="protocol[activity][0]">
+    </div>
+    
+    <button type="button" name="button" onclick="agregarInput()" id="activity-button">Agregar actividad</button>
+  </div>
+  <script type="text/javascript">
+    var i=1;
+    function agregarInput(){
+        var button = document.getElementById("activity-button");
+        var actividades = document.getElementById("actividades");
+        var input = document.createElement("input");
+        var div = document.createElement("div");
+        input.type = "text";
+        input.name = "protocol[activity]["+i+"]";
+        div.className="field";
+        div.appendChild(input);
+        // actividades.appendChild(div);
+        actividades.insertBefore(div,button);
+        i=i+1;
+    }
+  </script>
+<!-- Fin formulario para las actividades -->
 
   <div class="actions">
     <%= form.submit %>

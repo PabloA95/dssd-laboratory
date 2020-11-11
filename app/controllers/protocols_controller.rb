@@ -27,8 +27,12 @@ class ProtocolsController < ApplicationController
     @protocol = Protocol.new(protocol_params)
 
     respond_to do |format|
+      # if true
       if @protocol.save
-        #params['protocol']['aaa']
+        #params['protocol']['activity']
+        # aux=[]
+        # params['protocol']['activity'].each { |act| aux.append(act) }
+        # format.html { redirect_to @protocol, notice: aux }
         format.html { redirect_to @protocol, notice: 'Protocol was successfully created.' }
         format.json { render :show, status: :created, location: @protocol }
       else
