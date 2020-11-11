@@ -1,0 +1,62 @@
+<%= form_with(model: instance, local: true) do |form| %>
+  <% if instance.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(instance.errors.count, "error") %> prohibited this instance from being saved:</h2>
+
+      <ul>
+        <% instance.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="field">
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div class="field">
+    <%= form.label :user_id %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :start_date %>
+    <%= form.datetime_select :start_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :end_date %>
+    <%= form.datetime_select :end_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :order %>
+    <%= form.number_field :order %>
+  </div>
+
+  <div class="field">
+    <%= form.label :local %>
+    <%= form.check_box :local %>
+  </div>
+
+  <div class="field">
+    <%= form.label :score %>
+    <%= form.number_field :score %>
+  </div>
+
+  <div class="field">
+    <%= form.label :project_id %>
+    <%= form.text_field :project_id %>
+  </div>
+
+  <div class="field">
+    <%= form.label :protocol_id %>
+    <%= form.text_field :protocol_id %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>

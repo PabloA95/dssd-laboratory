@@ -1,0 +1,49 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Name:</strong>
+  <%= @instance.name %>
+</p>
+
+<p>
+  <strong>User:</strong>
+  <%= @instance.user_id %>
+</p>
+
+<p>
+  <strong>Start date:</strong>
+  <%= @instance.start_date %>
+</p>
+
+<p>
+  <strong>End date:</strong>
+  <%= @instance.end_date %>
+</p>
+
+<p>
+  <strong>Order:</strong>
+  <%= @instance.order %>
+</p>
+
+<p>
+  <strong>Local:</strong>
+  <%= @instance.local %>
+</p>
+
+<p>
+  <strong>Score:</strong>
+  <%= @instance.score %>
+</p>
+
+<p>
+  <strong>Project:</strong>
+  <%= @instance.project_id %>
+</p>
+
+<p>
+  <strong>Protocol:</strong>
+  <%= @instance.protocol_id %>
+</p>
+
+<%= link_to 'Edit', edit_instance_path(@instance) %> |
+<%= link_to 'Back', instances_path %>

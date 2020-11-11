@@ -1,0 +1,43 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Instances</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>User</th>
+      <th>Start date</th>
+      <th>End date</th>
+      <th>Order</th>
+      <th>Local</th>
+      <th>Score</th>
+      <th>Project</th>
+      <th>Protocol</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @instances.each do |instance| %>
+      <tr>
+        <td><%= instance.name %></td>
+        <td><%= instance.user_id %></td>
+        <td><%= instance.start_date %></td>
+        <td><%= instance.end_date %></td>
+        <td><%= instance.order %></td>
+        <td><%= instance.local %></td>
+        <td><%= instance.score %></td>
+        <td><%= instance.project_id %></td>
+        <td><%= instance.protocol_id %></td>
+        <td><%= link_to 'Show', instance %></td>
+        <td><%= link_to 'Edit', edit_instance_path(instance) %></td>
+        <td><%= link_to 'Destroy', instance, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Instance', new_instance_path %>
