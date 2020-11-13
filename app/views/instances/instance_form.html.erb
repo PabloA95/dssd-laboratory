@@ -1,0 +1,18 @@
+<h1><%= @instance.protocol.name %></h1>
+
+<h3>Cantidad de actividades: <%= @instance.protocol.activities.size %></h3>
+
+<form class="" action="/instances/next/<%= @instance.id %>" method="get">
+  <% @i=0 %>
+  <% @instance.protocol.activities.each do |p| %>
+    <div class="">
+
+      <label for="score"><%= p.name %></label>
+      <input type="number" name="score[<%= @i %>]" min="0" max="10" required>
+    </div>
+    <% @i=@i+1 %>
+  <% end %>
+  <input type="text" name="" value="<%= @instance.id %>" hidden>
+  <button type="submit" name="button">Enviar</button>
+
+</form>

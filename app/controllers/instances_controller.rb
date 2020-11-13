@@ -1,5 +1,27 @@
 class InstancesController < ApplicationController
-  before_action :set_instance, only: [:show, :edit, :update, :destroy]
+  before_action :set_instance, only: [:show, :edit, :update, :destroy, :instance_form, :next]
+
+  # GET /instances/form/:id
+  def instance_form
+  end
+
+  # GET /instances/next/:id
+  def next
+    aux=[]
+    total=0
+    cant=0
+    params['score'].each { |e| cant=cant+1; total=total+ e[1].to_i}
+    aux.append(total)
+    aux.append(total.to_f/cant)
+    aux.append((total+cant-1)/cant)
+    # @instance.score=(total+cant-1)/cant
+
+#Para donde redondeamos?
+
+    @instance.update(:score => (total+cant-1)/cant)
+    # @instance.save
+    render json: aux
+  end
 
   # GET /instances
   # GET /instances.json

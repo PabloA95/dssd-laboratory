@@ -1,6 +1,8 @@
 class ProtocolsController < ApplicationController
   before_action :set_protocol, only: [:show, :edit, :update, :destroy]
 
+
+
   # GET /protocols
   # GET /protocols.json
   def index
@@ -30,10 +32,19 @@ class ProtocolsController < ApplicationController
       # if true
       if @protocol.save
         #params['protocol']['activity']
-        # aux=[]
-        # params['protocol']['activity'].each { |act| aux.append(act) }
-        # format.html { redirect_to @protocol, notice: aux }
-        format.html { redirect_to @protocol, notice: 'Protocol was successfully created.' }
+        aux=[]
+        params['protocol']['activity'].each { |act|
+          aux.append(act)
+          @activity = Activity.new
+          @activity.name=act[1] #buscar forma mas linda
+          @activity.protocol=@protocol
+          # @activity.protocol_id=@protocol.id
+          # @activity.protocol=@protocol
+          aux.append(@activity)
+          @activity.save
+         }
+        format.html { redirect_to @protocol, notice: aux }
+        # format.html { redirect_to @protocol, notice: 'Protocol was successfully created.' }
         format.json { render :show, status: :created, location: @protocol }
       else
         format.html { render :new }
