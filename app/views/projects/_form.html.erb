@@ -31,7 +31,24 @@
     <%= form.datetime_select :end_date %>
   </div>
 
+
+<div class="field">
+  <h3>Seleccionar protocolos</h3>
+  <% @i=0 %>
+  <% @protocols.each do |p| %>
+    <div class="">
+
+      <label for="score"><%= p.name %></label>
+      <input type="checkbox" name="added[<%= @i %>]">
+      <input type="text" name="user[<%= @i %>]">
+    </div>
+    <% @i=@i+1 %>
+  <% end %>
+</div>
+
+
   <div class="actions">
     <%= form.submit %>
   </div>
+
 <% end %>

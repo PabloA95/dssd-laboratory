@@ -25,6 +25,7 @@ gem 'jbuilder', '~> 2.7'
 gem 'devise'
 gem 'cancancan'
 gem 'rolify'
+gem 'faraday'
 
 # Use Active Storage variant
 # gem 'image_processing', '~> 1.2'
