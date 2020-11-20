@@ -1,0 +1,29 @@
+<div class="container p-3 mt-3">
+	<div class="row">
+		<% if @user.has_role? :responsable %>
+		<div class="col-4 align-items-center border-right border-left border-light">
+			<h5>Responsable de protocolos</h5>
+			<!-- <h5>Tiene rol responsable</h5> -->
+			If tiene actividades
+			<h6>No hay actividades</h6>
+		</div>
+		<% end %>
+
+		<% if @user.has_role? :jefe %>
+		<div class="col-4 align-items-center border-right border-left border-light">
+			<h5>Jefe de proyectos</h5>
+			<!-- <h5>Tiene rol jefe</h5> -->
+			<a class="btn btn-primary" href="/projects/new">Crear proyecto</a>
+			<a class="btn btn-primary" href="/projects">Listar Proyectos</a>
+		</div>
+		<% end %>
+
+		<% if true %>
+		<div class="col-4 align-items-center border-right border-left border-light">
+			<h5>Jerarquico</h5>
+			<a class="btn btn-primary" href="">Monitor</a>
+		</div>
+		<% end %>
+	</div>
+</div>
+

@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+
+  get "/index", to: "projects#home_page"
+
   resources :activities
   resources :instances
   resources :protocols

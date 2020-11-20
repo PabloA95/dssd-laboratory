@@ -1,5 +1,6 @@
 class InstancesController < ApplicationController
   before_action :set_instance, only: [:show, :edit, :update, :destroy, :instance_form, :next]
+  # before_action :authenticate_user!
 
   # GET /instances/form/:id
   def instance_form

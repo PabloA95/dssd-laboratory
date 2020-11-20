@@ -17,16 +17,6 @@
   </div>
 
   <div class="field">
-    <%= form.label :user_id %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div class="field">
-    <%= form.label :start_date %>
-    <%= form.datetime_select :start_date %>
-  </div>
-
-  <div class="field">
     <%= form.label :end_date %>
     <%= form.datetime_select :end_date %>
   </div>
@@ -34,15 +24,18 @@
 
 <div class="field">
   <h3>Seleccionar protocolos</h3>
-  <% @i=0 %>
   <% @protocols.each do |p| %>
     <div class="">
 
       <label for="score"><%= p.name %></label>
-      <input type="checkbox" name="added[<%= @i %>]">
-      <input type="text" name="user[<%= @i %>]">
+      <input type="checkbox" name="added[<%= p.id %>]">
+      <label for="score">Responsable</label>
+      <input type="text" name="user[<%= p.id %>]">
+      <!-- <label for="score">Es local?</label> -->
+      <input type="text" name="local[<%= p.id %>]" value="<%if p.local==true %>1<% else %>0<% end %>" hidden>
+      <label for="score">Orden</label>
+      <input type="number" name="orden[<%= p.id %>]" min="0" >
     </div>
-    <% @i=@i+1 %>
   <% end %>
 </div>
 
