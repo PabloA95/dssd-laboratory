@@ -1,5 +1,8 @@
-<h1>New Project</h1>
+<h1>Crear proyecto</h1>
 
 <%= render 'form', project: @project %>
 
-<%= link_to 'Back', projects_path %>
+<div class="div_buttons">
+  <%= link_to 'Lista de projectos', projects_path, class: "btn btn-primary my_button" %>
+  <a class="btn btn-primary my_button" href="/index">Volver a inicio</a>
+</div>

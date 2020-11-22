@@ -24,6 +24,7 @@ end
   def new
     @project = Project.new
     @protocols = Protocol.all
+    @users = User.getResponsables
   end
 
   # GET /projects/1/edit

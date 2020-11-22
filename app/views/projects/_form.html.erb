@@ -1,47 +1,57 @@
-<%= form_with(model: project, local: true) do |form| %>
-  <% if project.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
+<div class="col-5 mx-auto">
+  <%= form_with(model: project, local: true) do |form| %>
+    <% if project.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
 
-      <ul>
-        <% project.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+        <ul>
+          <% project.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field m-4">
+      <%= form.label :name, 'Nombre' %>
+      <%= form.text_field :name, :class => "form-control" %>
     </div>
-  <% end %>
+
+    <div class="field">
+      <%= form.label :end_date, "Fecha de fin" %>
+      <%= form.datetime_select :end_date %>
+    </div>
+
 
   <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
+    <h3>Seleccionar protocolos</h3>
+    <% @protocols.each do |p| %>
+      <div class="card bg-secondary text-white mb-3 p-2">
+        <!-- bg-secondary o dark -->
+        <h5><%= p.name %></h5>
+        <div class="form-check">
+          <label for="added[<%= p.id %>]">Ejecutar</label>
+          <input type="checkbox" name="added[<%= p.id %>]">
+        </div>
+        <label for="user[<%= p.id %>]">Responsable</label>
+        <select class="" name="user[<%= p.id %>]">
+          <% @users.each do |u| %>
+            <option value="<%= u.id %>"><%= u.email %></option>
+          <% end %>
+        </select>
+      <%#  <input type="text" name="user[<%= p.id %->]" class="form-control"> %>
+        <!-- <label for="score">Es local?</label> -->
+        <input type="text" name="local[<%= p.id %>]" value="<%if p.local==true %>1<% else %>0<% end %>" hidden>
+        <label for="orden[<%= p.id %>]">Orden</label>
+        <input type="number" name="orden[<%= p.id %>]" min="0" class="form-control">
+      </div>
+    <% end %>
   </div>
 
-  <div class="field">
-    <%= form.label :end_date %>
-    <%= form.datetime_select :end_date %>
-  </div>
 
-
-<div class="field">
-  <h3>Seleccionar protocolos</h3>
-  <% @protocols.each do |p| %>
-    <div class="">
-
-      <label for="score"><%= p.name %></label>
-      <input type="checkbox" name="added[<%= p.id %>]">
-      <label for="score">Responsable</label>
-      <input type="text" name="user[<%= p.id %>]">
-      <!-- <label for="score">Es local?</label> -->
-      <input type="text" name="local[<%= p.id %>]" value="<%if p.local==true %>1<% else %>0<% end %>" hidden>
-      <label for="score">Orden</label>
-      <input type="number" name="orden[<%= p.id %>]" min="0" >
+    <div class="actions">
+      <%= form.submit 'Crear', :class => 'btn btn-success my_button' %>
     </div>
+
   <% end %>
 </div>
-
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-
-<% end %>

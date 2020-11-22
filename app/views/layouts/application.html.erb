@@ -4,7 +4,8 @@
     <title>Laboratory</title>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-
+    <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Source Code Pro" rel="stylesheet">
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
     <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
     <%= stylesheet_link_tag 'bootstrap.css' %>
@@ -13,6 +14,19 @@
 <style type="text/css">
   a{
     color: white;
+  }
+  .my_button{
+    width: 175px;
+    margin-bottom:0.5em;
+  }
+  .div_buttons{
+    margin-top:3em;
+  }
+
+  .logout-button-position{
+    position: fixed !important;
+    bottom: 0px !important;
+    right: 0px !important;
   }
 </style>
 
@@ -38,14 +52,15 @@
       </ul>
 
     </div> -->
-    
+
     </nav>
     <div class="container text-center">
       <%= yield %>
     </div>
     <% if user_signed_in? %>
-      <%= button_to "Logout", destroy_user_session_path, method: :delete , :class => "btn btn-danger mt-3" %>
-
+      <div class="div_buttons">
+        <%= button_to "Logout", destroy_user_session_path, method: :delete , :class => "btn btn-danger mt-3 logout-button-position" %>
+        </div>
     <% end %>
   </body>
 </html>

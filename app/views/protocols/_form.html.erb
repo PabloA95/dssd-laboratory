@@ -1,54 +1,57 @@
-<%= form_with(model: protocol, local: true) do |form| %>
-  <% if protocol.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(protocol.errors.count, "error") %> prohibited this protocol from being saved:</h2>
+<div class="col-4 mx-auto">
+  <%= form_with(model: protocol, local: true, :html => { :class => 'form-group' }) do |form| %>
+    <% if protocol.errors.any? %>
+      <div id="error_explanation">
+        <h2><%= pluralize(protocol.errors.count, "error") %> prohibited this protocol from being saved:</h2>
 
-      <ul>
-        <% protocol.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+        <ul>
+          <% protocol.errors.full_messages.each do |message| %>
+            <li><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="field">
+      <%= form.label :name, "Nombre" %>
+      <%= form.text_field :name, :class => "form-control" %>
+    </div>
+
+    <div class="field">
+      <%= form.label :local %>
+      <%= form.check_box :local %>
+    </div>
+
+  <!-- Inicio formulario para las actividades -->
+    <div class="field" id="actividades">
+      <h5>Agregar actividades</h5>
+      <div class="field">
+        <input type="text" name="protocol[activity][0]" class="form-control">
+      </div>
+
+      <button class="btn btn-info my_button" type="button" name="button" onclick="agregarInput()" id="activity-button">Agregar actividad</button>
+    </div>
+    <script type="text/javascript">
+      var i=1;
+      function agregarInput(){
+          var button = document.getElementById("activity-button");
+          var actividades = document.getElementById("actividades");
+          var input = document.createElement("input");
+          var div = document.createElement("div");
+          input.type = "text";
+          input.name = "protocol[activity]["+i+"]";
+          input.className = "form-control"
+          div.className="field";
+          div.appendChild(input);
+          // actividades.appendChild(div);
+          actividades.insertBefore(div,button);
+          i=i+1;
+      }
+    </script>
+  <!-- Fin formulario para las actividades -->
+
+    <div class="actions">
+      <%= form.submit 'Crear', :class => 'btn btn-success my_button' %>
     </div>
   <% end %>
-
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div class="field">
-    <%= form.label :local %>
-    <%= form.check_box :local %>
-  </div>
-
-<!-- Inicio formulario para las actividades -->
-  <div class="field" id="actividades">
-    <h3>Agregar actividades</h3>
-    <div class="field">
-      <input type="text" name="protocol[activity][0]">
-    </div>
-    
-    <button type="button" name="button" onclick="agregarInput()" id="activity-button">Agregar actividad</button>
-  </div>
-  <script type="text/javascript">
-    var i=1;
-    function agregarInput(){
-        var button = document.getElementById("activity-button");
-        var actividades = document.getElementById("actividades");
-        var input = document.createElement("input");
-        var div = document.createElement("div");
-        input.type = "text";
-        input.name = "protocol[activity]["+i+"]";
-        div.className="field";
-        div.appendChild(input);
-        // actividades.appendChild(div);
-        actividades.insertBefore(div,button);
-        i=i+1;
-    }
-  </script>
-<!-- Fin formulario para las actividades -->
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
-<% end %>
+</div>

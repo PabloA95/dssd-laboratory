@@ -1,15 +1,14 @@
 <p id="notice"><%= notice %></p>
 
-<h1>Projects</h1>
+<h1>Proyectos</h1>
 
-<table>
-  <thead>
+<table class="table table-striped table-dark">
+  <thead class="thead-dark">
     <tr>
       <th>Name</th>
       <th>User</th>
       <th>Start date</th>
       <th>End date</th>
-      <th colspan="3"></th>
     </tr>
   </thead>
 
@@ -20,14 +19,16 @@
         <td><%= project.user_id %></td>
         <td><%= project.start_date %></td>
         <td><%= project.end_date %></td>
-        <td><%= link_to 'Show', project %></td>
-        <td><%= link_to 'Edit', edit_project_path(project) %></td>
-        <td><%= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <%#<td><%= link_to 'Show', project %-></td>
+        <td><%= link_to 'Edit', edit_project_path(project) %-></td>
+        <td><%= link_to 'Destroy', project, method: :delete, data: { confirm: 'Are you sure?' } %-></td>%>
       </tr>
     <% end %>
   </tbody>
 </table>
 
 <br>
-
-<%= link_to 'New Project', new_project_path %>
+<div class="div_buttons">
+  <%= link_to 'Crear proyecto', new_project_path, class: "btn btn-primary my_button" %>
+  <a class="btn btn-primary my_button" href="/index">Volver a inicio</a>
+</div>
