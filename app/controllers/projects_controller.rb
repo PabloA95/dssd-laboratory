@@ -45,15 +45,16 @@ end
 respuestaLogin = apim.loginBonita
 
 #Hacer una funcion para esto
-        a3 = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
-        prueba = Hash[a3.map {|key, value| [key, value]}]
-        jsession = prueba["JSESSIONID"]
-        apiToken = prueba["X-Bonita-API-Token"]
-        cookie = apim.assembleCookie prueba
-#####
-        a2=apim.createCase(jsession, apiToken, cookie)
+#Recuperar tokens de la sesion
+        formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
+        hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
+        jsession = hashedLogin["JSESSIONID"]
+        apiToken = hashedLogin["X-Bonita-API-Token"]
+        cookie = apim.assembleCookie hashedLogin
+######
 
         hash = {}
+
         i=0
         params['added'].each { |key, value|
           @instance = Instance.new
@@ -61,13 +62,25 @@ respuestaLogin = apim.loginBonita
           #Instance copiar valores de protocolo
           #@instance.save
           hash[i]={'protocolo'=> key, 'responsable'=>params['user'][key], 'local'=> params['local'][key] }
+          aux=hash.to_json+","
           i=i+1
          }
+valueToSet="["+hash.to_json+"]"
+#Crear caso y setear variables
+        # caseResponse =apim.createCase(jsession, apiToken, cookie)
+        # caseId = JSON.parse(caseResponse.body)["id"]
+    # aux1 = apim.setVariable jsession, apiToken, cookie, 10004, valueToSet
+#,\"rootCaseId\":\"8006\",\"id\":\"8006\"
+
+
+######
+aux1 = apim.finishActivity jsession, apiToken, cookie, 11003	# caseId
+
 
          #ENVIAR PARA SETEAR LAS VARIABLES DE BONITA
          # apim.setProcessProtocols(hash.to_json)
 close = apim.logoutBonita cookie
-        format.html { redirect_to @project, notice: hash.to_json } #@aux['set-cookie']
+        format.html { redirect_to @project, notice: aux1 } #@aux['set-cookie']
         # format.html { redirect_to @project, notice: JSON.parse(@aux.headers["set-cookie"]) }
         format.json { render :show, status: :created, location: @project }
       else
