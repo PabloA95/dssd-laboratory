@@ -60,15 +60,11 @@ class ApiManagement < ApplicationController
       # params: {'value':'{"aaa":1,"bbb":123,"ccc":"w"}', 'type': "java.util.List"},
       headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
     )
+    aux='{"value":['+valueToSet+'], "type": "java.lang.String"}'
     resp = conn.put() do |req|
-      aux='{"value":'+valueToSet+', "type": "java.lang.String"}'
       req.body = aux
     end
     resp
-  end
-
-  def setProcessProtocols jason
-    #IMPLEMENTAR
   end
 
 

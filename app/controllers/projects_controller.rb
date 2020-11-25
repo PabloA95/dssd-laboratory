@@ -53,34 +53,41 @@ respuestaLogin = apim.loginBonita
         cookie = apim.assembleCookie hashedLogin
 ######
 
-        hash = {}
+        # hash = {}
+#         i=0
+#         params['added'].each { |key, value|
+#           @instance = Instance.new
+#           #@instance.user=params['user'][key]
+#           #Instance copiar valores de protocolo
+#           #@instance.save
+#           hash[i]={'protocolo'=> key, 'responsable'=>params['user'][key], 'local'=> params['local'][key] }
+#           aux=hash.to_json+","
+#           i=i+1
+#          }
+# valueToSet="["+hash.to_json+"]"
 
-        i=0
-        params['added'].each { |key, value|
-          @instance = Instance.new
-          #@instance.user=params['user'][key]
-          #Instance copiar valores de protocolo
-          #@instance.save
-          hash[i]={'protocolo'=> key, 'responsable'=>params['user'][key], 'local'=> params['local'][key] }
-          aux=hash.to_json+","
-          i=i+1
-         }
-valueToSet="["+hash.to_json+"]"
 #Crear caso y setear variables
         # caseResponse =apim.createCase(jsession, apiToken, cookie)
         # caseId = JSON.parse(caseResponse.body)["id"]
-    # aux1 = apim.setVariable jsession, apiToken, cookie, 10004, valueToSet
-#,\"rootCaseId\":\"8006\",\"id\":\"8006\"
-
+auxOrdenar=[]
+# paramsAux=""
+    params["params"].each { |key, value|
+      if value["added"]
+        auxOrdenar.append(value)
+        # paramsAux=paramsAux+","+value.to_json.to_s
+        #Crear instancia!!!
+      end
+    }
+    auxOrdenar=auxOrdenar.sort_by { |w| w["orden"] }
+    paramsAux=auxOrdenar.join(',')
+    # paramsAux=paramsAux[1...]
+    aux1 = apim.setVariable jsession, apiToken, cookie, 12048, paramsAux.gsub("=>",":") #params["params"].to_json.to_s#paramsAux
 
 ######
-aux1 = apim.finishActivity jsession, apiToken, cookie, 11003	# caseId
+# aux1 = apim.finishActivity jsession, apiToken, cookie, 12006	# caseId
 
-
-         #ENVIAR PARA SETEAR LAS VARIABLES DE BONITA
-         # apim.setProcessProtocols(hash.to_json)
 close = apim.logoutBonita cookie
-        format.html { redirect_to @project, notice: aux1 } #@aux['set-cookie']
+        format.html { redirect_to @project, notice: aux1 }
         # format.html { redirect_to @project, notice: JSON.parse(@aux.headers["set-cookie"]) }
         format.json { render :show, status: :created, location: @project }
       else
