@@ -12,7 +12,9 @@
     </div>
     <% @i=@i+1 %>
   <% end %>
-  <input type="text" name="" value="<%= @instance.id %>" hidden>
+  <input type="text" name="instance" value="<%= @instance.id %>" hidden>
+  <input type="text" name="caseId" value="<%= @caseId %>" hidden>
+  <input type="text" name="activityId" value="<%= @activityId %>" hidden>
   <button type="submit" name="button">Enviar</button>
 
 </form>

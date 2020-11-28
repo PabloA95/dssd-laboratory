@@ -2,8 +2,10 @@ class InstancesController < ApplicationController
   before_action :set_instance, only: [:show, :edit, :update, :destroy, :instance_form, :next]
   # before_action :authenticate_user!
 
-  # GET /instances/form/:id
+  # GET /instances/form/:id/:caseId/:activityId
   def instance_form
+    @caseId = params[:caseId]
+    @activityId = params[:activityId]
   end
 
   # GET /instances/next/:id
@@ -16,12 +18,23 @@ class InstancesController < ApplicationController
     aux.append(total.to_f/cant)
     aux.append((total+cant-1)/cant)
     # @instance.score=(total+cant-1)/cant
-
 #Para donde redondeamos?
-
     @instance.update(:score => (total+cant-1)/cant)
     # @instance.save
-    render json: aux
+
+#Hacer una funcion para esto
+#Recuperar tokens de la sesion
+    apim = ApiManagement.new
+    respuestaLogin = apim.loginBonita
+    formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
+    hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
+    jsession = hashedLogin["JSESSIONID"]
+    apiToken = hashedLogin["X-Bonita-API-Token"]
+    cookie = apim.assembleCookie hashedLogin
+###################################
+    aux1 = apim.setScore jsession, apiToken, cookie, params[:caseId], (total+cant-1)/cant
+    aux1 = apim.finishActivity jsession, apiToken, cookie, params[:caseId]
+    redirect_to "http://localhost:3000/index"
   end
 
   # GET /instances

@@ -5,22 +5,38 @@
 		<div class="col-4 align-items-center border-right border-left border-light">
 			<h5>Responsable de protocolos</h5>
 			<!-- <h5>Tiene rol responsable</h5> -->
-			If tiene actividades
-			<h6>No hay actividades</h6>
+			<% if @listaMostrar.empty? %>
+				<h6>No hay actividades</h6>
+			<% else %>
+			Recuperar bien los datos, no las respuestas http
+				<% @listaMostrar.each do |elem| %>
+					<h5><%= elem["instance"] %></h5>
+					<a href="http://localhost:3000/instances/form/<%= elem["instance"] %>/<%= elem["caseId"] %>/<%= elem["activityId"] %>">Instancia</a>
+				<% end %>
+			<% end %>
 		</div>
 		<% end %>
 
 		<% if @user.has_role? :jefe %>
-		<div class="col-4 align-items-center border-right border-left border-light">
-			<h5>Jefe de proyectos</h5>
-			<!-- <h5>Tiene rol jefe</h5> -->
-			<a class="btn btn-primary my_button" href="/activities">Lista de actividades</a>
-			<a class="btn btn-primary my_button" href="/protocols">Lista de protocolos</a>
-			<a class="btn btn-primary my_button" href="/projects">Lista de proyectos</a>
-			<a class="btn btn-primary my_button" href="/protocols/new">Crear protocolo</a>
-			<a class="btn btn-primary my_button" href="/projects/new">Crear proyecto</a>
-			<%# <%= link_to 'Back', activities_path %>
-		</div>
+			<div class="col-4 align-items-center border-right border-left border-light">
+				<h5>Jefe de proyectos</h5>
+				<!-- <h5>Tiene rol jefe</h5> -->
+				<a class="btn btn-primary my_button" href="/activities">Lista de actividades</a>
+				<a class="btn btn-primary my_button" href="/protocols">Lista de protocolos</a>
+				<a class="btn btn-primary my_button" href="/projects">Lista de proyectos</a>
+				<a class="btn btn-primary my_button" href="/protocols/new">Crear protocolo</a>
+				<a class="btn btn-primary my_button" href="/projects/new">Crear proyecto</a>
+				<%# <%= link_to 'Back', activities_path %>
+				<div class="card bg-dark text-white">
+					<% if @listaJefe.empty? %>
+						<h6>No hay actividades</h6>
+					<% else %>
+						<% @listaJefe.each do |elem| %>
+							<a href="http://localhost:3000/projects/tomar_decision/<%= elem["id"] %>/<%= elem["caseId"] %>">Caso 1</a>
+						<% end %>
+					<% end %>
+				</div>
+			</div>
 		<% end %>
 
 		<% if true %>

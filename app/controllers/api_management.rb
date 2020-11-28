@@ -29,7 +29,7 @@ class ApiManagement < ApplicationController
     # curl -b saved_cookies.txt -X GET --url 'http://localhost:8080/bonita/API/bpm/process?f=name=Pool1' -v
     # [{"displayDescription":"","deploymentDate":"2020-11-16 11:45:33.555","displayName":"Pool1","name":"Pool1","description":"","deployedBy":"4","id":"5520735587104525227","activationState":"ENABLED","version":"1.0","configurationState":"RESOLVED","last_update_date":"2020-11-16 11:45:34.082","actorinitiatorid":"1101"}]
     conn = Faraday.new(
-      url: 'http://localhost:8080/bonita/API/bpm/process?f=name=Pool',
+      url: 'http://localhost:8080/bonita/API/bpm/process?f=name=Testeo de medicamento',
       headers: {'Content-Type' => 'application/json','Cookie'=>cookie}
     )
     aux = conn.get()
@@ -56,7 +56,7 @@ class ApiManagement < ApplicationController
 
   def setVariable jsession,apiToken,cookie,caseId,valueToSet
     conn = Faraday.new(
-      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/otroString',
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/jsonString',
       # params: {'value':'{"aaa":1,"bbb":123,"ccc":"w"}', 'type': "java.util.List"},
       headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
     )
@@ -111,4 +111,113 @@ class ApiManagement < ApplicationController
     )
     conn.get()
   end
+
+##################################################################################
+
+  def getActivitiesList cookie, name
+    # curl -b saved_cookies.txt -X GET
+    # --url 'http://localhost:8080/bonita/API/bpm/activity?p=0&c=10&f=name%3dTarea2'
+    # --header 'Content-Type:"application/json"' -v
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/activity?p=0&c=10&f=name%3d'+name, #cambiar paginacion
+      headers: {'Content-Type' => 'application/json','Cookie'=>cookie}
+    )
+    aux = conn.get()
+
+    return aux
+    # return JSON.parse((JSON.parse(aux.to_json))["body"])[0]["id"]
+  end
+
+  def getResponsableForCase caseId, cookie
+    # /API/bpm/caseVariable/:caseId/:variableName
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId+'/actResponsable',  #Actualizar nombre
+      headers: {'Content-Type' => 'application/json','Cookie'=>cookie}
+    )
+    aux = conn.get()
+return aux
+    # return JSON.parse((JSON.parse(aux.to_json))["body"])["value"]
+    # return aux #JSON.parse((JSON.parse(aux.to_json))["body"])[0]["value"].to_i
+  end
+
+  def getVariable caseId, cookie, varName
+    # /API/bpm/caseVariable/:caseId/:variableName
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId+'/'+varName,  #Actualizar nombre
+      headers: {'Content-Type' => 'application/json','Cookie'=>cookie}
+    )
+    aux = conn.get()
+return aux
+    # return JSON.parse((JSON.parse(aux.to_json))["body"])["value"]
+    # return aux #JSON.parse((JSON.parse(aux.to_json))["body"])[0]["value"].to_i
+  end
+
+  def getJefeForCase caseId, cookie
+    # /API/bpm/caseVariable/:caseId/:variableName
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/jefe',  #Actualizar nombre
+      headers: {'Content-Type' => 'application/json','Cookie'=>cookie}
+    )
+    aux = conn.get()
+
+    return aux #JSON.parse((JSON.parse(aux.to_json))["body"])[0]["value"].to_i
+  end
+
+  def setResponsable jsession,apiToken,cookie,activityId,responsable
+    # conn = Faraday.new(
+    #   url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/actResponsable',
+    #   headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
+    # )
+    # aux='{"value":'+responsable.to_s+', "type": "java.lang.String"}'
+    # resp = conn.put() do |req|
+    #   req.body = aux
+    # end
+    # resp
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/userTask/'+activityId,
+      headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
+    )
+    resp = conn.put() do |req|
+      # aux='{"assigned_id" : "###","state":"completed"}'
+      req.body = '{"assigned_id" : '+responsable.to_s+'}' # Revisar lo de asignar el responsable
+    end
+    resp
+  end
+
+  def setScore jsession,apiToken,cookie,caseId,score
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/actScore',
+      headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
+    )
+    aux='{"value":'+score.to_s+', "type": "java.lang.Integer"}'
+    resp = conn.put() do |req|
+      req.body = aux
+    end
+    resp
+  end
+
+  def setJefe jsession,apiToken,cookie,caseId,jefe
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/jefe',
+      headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
+    )
+    aux='{"value":'+jefe.to_s+', "type": "java.lang.Integer"}'
+    resp = conn.put() do |req|
+      req.body = aux
+    end
+    resp
+  end
+
+  def setDecision jsession,apiToken,cookie,caseId,decision
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/decision',
+      headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
+    )
+    aux='{"value":"'+decision+'", "type": "java.lang.String"}'
+    resp = conn.put() do |req|
+      req.body = aux
+    end
+    resp
+  end
+
 end

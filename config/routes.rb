@@ -8,7 +8,10 @@ Rails.application.routes.draw do
   resources :projects
   devise_for :users
 
-  get "/instances/form/:id", to: "instances#instance_form"
+  get "/instances/form/:id/:caseId/:activityId", to: "instances#instance_form"
   get "/instances/next/:id", to: "instances#next"
+
+  get "/projects/tomar_decision/:activityId/:caseId", to: "projects#tomar_decision_form"
+  post "/projects/resolver", to: "projects#resolver"
   # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
 end
