@@ -1,0 +1,11 @@
+Protocolos en ejecucion: <%= @running.size %>
+<br>
+Protocolos en ejecucion con el protocolo actual atrasado <%= @delayed.size %>
+
+<% @delayed.each do |i| %>
+    <br>
+    <h3>Nombre de proyecto  <%= i.project.name %></h3>
+    <h5>Nombre de protocolo  <%= i.protocol.name %></h5>
+    -----------------------------
+    <br>
+<% end %>

@@ -98,8 +98,10 @@ end
         @instance = Instance.new
         @instance.user_id = value["user"]
         @instance.protocol_id = value["protocol"]
+        @instance.start_date = value["start_date"]
+        @instance.end_date = value["end_date"]
         # @instance.project = @project
-        @instance.project_id = 1
+        @instance.project_id = @project.id
         @instance.save
         # Instance(id: integer, name: string, user_id: integer,
         #start_date: datetime, end_date: datetime, order: integer,
@@ -184,6 +186,43 @@ end
       format.json { head :no_content }
     end
   end
+
+def consulta1
+  apim = ApiManagement.new
+  cookie = session[:cookie]
+
+  projects=Project.all
+  # @project=@projects.select { |proj|  (proj.instances.all? { |inst| inst.score.nil? or inst.score>=5 }) }
+  @projects =projects.select { |p|p.instances.all? { |i|i.score.nil? or i.score >= 5 }}
+
+  @running=apim.getRunningCases cookie
+  ids=[]
+  @running.each { |value|
+    resp=apim.getVariable value["id"], cookie, 'projectId'
+    ids.append(JSON.parse((JSON.parse(resp.to_json))["body"])["value"].to_i)
+  }
+
+  @projects=@projects.select{|pro| ids.include?(pro.id)}
+end
+
+def projectWithCurrentProtocolDelayed
+  apim = ApiManagement.new
+  cookie = session[:cookie]
+
+  @running=apim.getRunningCases cookie
+  @delayed=[]
+  @running.each { |value|
+    auxInstance=apim.getVariable value["id"], cookie, "actInstance"
+    instanceId=JSON.parse((JSON.parse(auxInstance.to_json))["body"])["value"].to_i
+    instance=Instance.find_by(id: instanceId)
+    if(!instance.nil? && !instance.end_date.nil?)
+      if(instance.end_date<DateTime.now)
+        @delayed.append(instance)
+      end
+    end
+  }
+  # render json: @delayed
+end
 
   private
     # Use callbacks to share common setup or constraints between actions.

@@ -54,9 +54,18 @@
       <div class="card bg-secondary text-white mb-3 p-2">
         <!-- bg-secondary o dark -->
         <h5><%= p.name %></h5>
-        <div class="form-check">
+        <h6><% if !p.local %>Se ejecuta localmente<% else %>Se ejecuta remotamente<% end %></h6>
+        <div class="form-check mt-1">
           <label for="params[<%= p.id %>][added]">Ejecutar</label>
           <input type="checkbox" name="params[<%= p.id %>][added]">
+        </div>
+        <div class="form-check mt-1">
+          <label for="params[<%= p.id %>][start_date]">Fecha estimada de inicio del protocolo</label>
+          <input type="datetime-local" name="params[<%= p.id %>][start_date]">
+        </div>
+        <div class="form-check mt-1">
+          <label for="params[<%= p.id %>][end_date]">Fecha estimada de fin del protocolo</label>
+          <input type="datetime-local" name="params[<%= p.id %>][end_date]">
         </div>
         <label for="params[<%= p.id %>][user]">Responsable</label>
         <select class="" name="params[<%= p.id %>][user]">

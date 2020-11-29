@@ -4,8 +4,6 @@ class ApiManagement < ApplicationController
 
   def loginBonita
 
-    #Revisar si siempre va las mismas credenciales
-
     conn = Faraday.new(
       url: 'http://localhost:8080/bonita/loginservice',
       params: {"username":"walter.bates","password":"bpm","redirect":"false","redirectURL":""},
@@ -232,4 +230,27 @@ return aux
     resp
   end
 
+  def getRunningCases cookie
+    # curl -b saved_cookies.txt -X GET --url 'http://localhost:8080/bonita/API/bpm/process?f=name=Testeo%20de%20medicamento'
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/case?f=name=Testeo%20de%20medicamento',
+      headers: {'Content-Type' => 'application/json','Cookie'=>cookie}
+    )
+    aux = conn.get()
+
+    return JSON.parse((JSON.parse(aux.to_json))["body"])
+
+  end
+
+  def getFinishedCases cookie
+    # curl -b saved_cookies.txt -X GET --url 'http://localhost:8080/bonita/API/bpm/process?f=name=Testeo%20de%20medicamento'
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/archivedCase?f=name=Testeo%20de%20medicamento',
+      headers: {'Content-Type' => 'application/json','Cookie'=>cookie}
+    )
+    aux = conn.get()
+
+    return JSON.parse((JSON.parse(aux.to_json))["body"])
+
+  end
 end
