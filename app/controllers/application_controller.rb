@@ -1,9 +1,21 @@
 class ApplicationController < ActionController::Base
-  
+
   def after_sign_in_path_for(resource)
+        apim = ApiManagement.new
+        respuestaLogin = apim.loginBonita
+        formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
+        hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
+
+        session[:jsession] = hashedLogin["JSESSIONID"]
+        session[:apiToken] = hashedLogin["X-Bonita-API-Token"]
+        session[:cookie] = apim.assembleCookie hashedLogin
     index_url
   end
+
   def after_sign_out_path_for(resource)
+    cookie = session[:cookie]
+    apim = ApiManagement.new
+    close = apim.logoutBonita cookie
     index_url
   end
   protected

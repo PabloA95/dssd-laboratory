@@ -220,4 +220,16 @@ return aux
     resp
   end
 
+  def setProject jsession, apiToken, cookie, caseId, project
+    conn = Faraday.new(
+      url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/projectId',
+      headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
+    )
+    aux='{"value":'+project.to_s+', "type": "java.lang.Integer"}'
+    resp = conn.put() do |req|
+      req.body = aux
+    end
+    resp
+  end
+
 end

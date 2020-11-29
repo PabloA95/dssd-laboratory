@@ -3,43 +3,15 @@ require 'json'
 class ProjectsController < ApplicationController
   before_action :set_project, only: [:show, :edit, :update, :destroy]
   before_action :authenticate_user!
-  #after_action :logerBonita, only: [:authenticate_user!]
-  #after_action :logerOutBonita, only: [:destroy_user_session!]
 
-# def logerBonita
-#   if (user_signed_in?) #(current_user != nil) #defined?(current_user) != nil
-#     apim = ApiManagement.new
-#     respuestaLogin = apim.loginBonita
-#     formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
-#     hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
-#
-#     session[:jsession] = hashedLogin["JSESSIONID"]
-#     session[:apiToken] = hashedLogin["X-Bonita-API-Token"]
-#     session[:cookie] = apim.assembleCookie hashedLogin
-#     # jsession = hashedLogin["JSESSIONID"]
-#     # apiToken = hashedLogin["X-Bonita-API-Token"]
-#     # cookie = apim.assembleCookie hashedLogin
-#   end
-# end
-#
-# def logerOutBonita
-#   cookie = session[:cookie]
-#   apim = ApiManagement.new
-#   close = apim.logoutBonita cookie
-# end
 
 def home_page
   @user = User.find(current_user.id)
-
-  # ESTO HAY QUE HACERLO UNA VEZ CUANDO SE LOGUEA Y DESPUES GUARDARLAS EN SESSION!!!
   apim = ApiManagement.new
-  respuestaLogin = apim.loginBonita
-  formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
-  hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
-  jsession = hashedLogin["JSESSIONID"]
-  apiToken = hashedLogin["X-Bonita-API-Token"]
-  cookie = apim.assembleCookie hashedLogin
-  #
+  jsession = session[:jsession]
+  apiToken = session[:apiToken]
+  cookie = session[:cookie]
+
   @listaMostrar=[]
   if (current_user.has_role? :responsable)
     lista = apim.getActivitiesList cookie, "Ejecucion local" #revisar si se puede pasar el id para que filtre segun la variable de proceso
@@ -108,41 +80,18 @@ end
     @project.user=current_user
     @project.start_date=DateTime.now
     respond_to do |format|
-      # if @project.save
-      if true
+      if @project.save
+      # if true
 
         apim = ApiManagement.new
-respuestaLogin = apim.loginBonita
-
-#Hacer una funcion para esto
-#Recuperar tokens de la sesion
-        formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
-        hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
-        jsession = hashedLogin["JSESSIONID"]
-        apiToken = hashedLogin["X-Bonita-API-Token"]
-        cookie = apim.assembleCookie hashedLogin
-# jsession = session[:jsession]
-# apiToken = session[:apiToken]
-# cookie = session[:cookie]
-######
-
-        # hash = {}
-#         i=0
-#         params['added'].each { |key, value|
-#           @instance = Instance.new
-#           #@instance.user=params['user'][key]
-#
-#           #@instance.save
-#           hash[i]={'protocolo'=> key, 'responsable'=>params['user'][key], 'local'=> params['local'][key] }
-#           aux=hash.to_json+","
-#           i=i+1
-#          }
-# valueToSet="["+hash.to_json+"]"
+        jsession = session[:jsession]
+        apiToken = session[:apiToken]
+        cookie = session[:cookie]
 
 #Crear caso y setear variables
         caseResponse =apim.createCase(jsession, apiToken, cookie)
         caseId = JSON.parse(caseResponse.body)["id"]
-auxOrdenar=[]
+        auxOrdenar=[]
 
     params["params"].each { |key, value|
       if value["added"]
@@ -167,18 +116,13 @@ auxOrdenar=[]
     }
     auxOrdenar=auxOrdenar.sort_by { |w| w["orden"] }
     paramsAux=auxOrdenar.join(',')
-    # paramsAux=paramsAux[1...]
 
-
-    #DESHARCODEAR despues de terminar
+    aux1 = apim.setProject jsession, apiToken, cookie, caseId, @project.id
     aux1 = apim.setVariable jsession, apiToken, cookie, caseId, paramsAux.gsub("=>",":") #params["params"].to_json.to_s#paramsAux
-# Setear el jefe
-######
-aux1 = apim.finishActivity jsession, apiToken, cookie, caseId	# caseId
-apim.setJefe jsession,apiToken,cookie,caseId,current_user.id
+    aux1 = apim.finishActivity jsession, apiToken, cookie, caseId	# caseId
+    apim.setJefe jsession,apiToken,cookie,caseId,current_user.id
 
-# close = apim.logoutBonita cookie
-        format.html { redirect_to @project, notice: paramsAux.gsub("=>",":") }
+        format.html { redirect_to "/index", notice: paramsAux.gsub("=>",":") } #paramsAux.gsub("=>",":")
         # format.html { redirect_to @project, notice: JSON.parse(@aux.headers["set-cookie"]) }
         format.json { render :show, status: :created, location: @project }
       else
@@ -192,14 +136,9 @@ apim.setJefe jsession,apiToken,cookie,caseId,current_user.id
 def tomar_decision_form
 
   apim = ApiManagement.new
-  respuestaLogin = apim.loginBonita
-  #Hacer una funcion para esto
-  #Recuperar tokens de la sesion
-  formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
-  hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
-  jsession = hashedLogin["JSESSIONID"]
-  apiToken = hashedLogin["X-Bonita-API-Token"]
-  cookie = apim.assembleCookie hashedLogin
+  jsession = session[:jsession]
+  apiToken = session[:apiToken]
+  cookie = session[:cookie]
 
   @caseId=params["caseId"]
   @activityId=params["activityId"]
@@ -213,19 +152,12 @@ end
 # POST /projects/resolver
 def resolver
   apim = ApiManagement.new
-  respuestaLogin = apim.loginBonita
-  #Hacer una funcion para esto
-  #Recuperar tokens de la sesion
-  formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
-  hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
-  jsession = hashedLogin["JSESSIONID"]
-  apiToken = hashedLogin["X-Bonita-API-Token"]
-  cookie = apim.assembleCookie hashedLogin
+  jsession = session[:jsession]
+  apiToken = session[:apiToken]
+  cookie = session[:cookie]
 
-
-# render json: params["decision"]
-apim.setDecision jsession,apiToken,cookie,params["caseId"],params["decision"]
-aux1 = apim.finishActivity jsession, apiToken, cookie, params["caseId"]
+  apim.setDecision jsession,apiToken,cookie,params["caseId"],params["decision"]
+  aux1 = apim.finishActivity jsession, apiToken, cookie, params["caseId"]
   redirect_to "http://localhost:3000/index"
 end
 

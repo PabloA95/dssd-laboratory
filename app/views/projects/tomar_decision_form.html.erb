@@ -1,20 +1,21 @@
-<div class="col-10 mx-auto">
+<div class="col-4 mx-auto">
   <p id="notice"><%= notice %></p>
     <h3>Protocolo <%= @instancia.protocol.name %></h3>
-  	<div class="row">
-      <h5>Nota<%= @instancia.score %></h5>
+  	<div class="card bg-dark">
+      <h5>Nota: <%= @instancia.score %></h5>
       <div class="form-group">
         <form class="" action="/projects/resolver" method="post">
-          <select name="decision">
+<!-- class="form-control" -->
+          <select name="decision" class="form-control">
             <option value="cancelar" selected>Cancelar</option>
-            <option value="cotinuar">Cotinuar</option>
+            <option value="continuar">Cotinuar</option>
             <option value="reiniciar">Reiniciar</option>
             <option value="repetir">Repetir</option>
           </select>
           <input type="text" name="caseId" value="<%= @caseId %>" hidden>
           <input type="text" name="activityId" value="<%= @activityId %>" hidden>
           <%= hidden_field_tag :authenticity_token, form_authenticity_token %>
-          <input type="submit" name="button" value="button">
+          <input type="submit" name="button" value="button" class="btn btn-primary my_button mt-3">
         </form>
       </div>
     </div>

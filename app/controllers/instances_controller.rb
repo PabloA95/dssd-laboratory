@@ -22,16 +22,11 @@ class InstancesController < ApplicationController
     @instance.update(:score => (total+cant-1)/cant)
     # @instance.save
 
-#Hacer una funcion para esto
-#Recuperar tokens de la sesion
     apim = ApiManagement.new
-    respuestaLogin = apim.loginBonita
-    formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
-    hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
-    jsession = hashedLogin["JSESSIONID"]
-    apiToken = hashedLogin["X-Bonita-API-Token"]
-    cookie = apim.assembleCookie hashedLogin
-###################################
+    jsession = session[:jsession]
+    apiToken = session[:apiToken]
+    cookie = session[:cookie]
+
     aux1 = apim.setScore jsession, apiToken, cookie, params[:caseId], (total+cant-1)/cant
     aux1 = apim.finishActivity jsession, apiToken, cookie, params[:caseId]
     redirect_to "http://localhost:3000/index"
