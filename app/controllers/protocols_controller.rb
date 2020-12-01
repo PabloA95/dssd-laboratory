@@ -45,16 +45,19 @@ class ProtocolsController < ApplicationController
           aux.append(@activity)
           @activity.save
          }
-##      ##########Crear protocolos en heroku too
 
+      ##########Crear protocolos en heroku too
+      if (!@protocol.local)
+        
         apim = ApiManagement.new
         response = apim.loginHeroku
         token = response.body()
         parsedTkn = JSON.parse(token)
         apim.createProtocol parsedTkn["token"], @protocol.name , activities.join(",")
+      end
+      ##########
 
-##      ##########
-        format.html { redirect_to @protocol, notice: aux }
+        format.html { redirect_to @protocol, notice: "" }
         # format.html { redirect_to @protocol, notice: 'Protocol was successfully created.' }
         format.json { render :show, status: :created, location: @protocol }
       else
