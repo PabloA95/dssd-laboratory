@@ -1,0 +1,19 @@
+<div class="col-10 mx-auto mt-3">
+  <div class="card bg-dark text-">
+    <h5>Protocolos en ejecucion: <%= @running.size %></h5>
+    <h5>Protocolos en ejecucion con todos los protocolos aprobados hasta el momento <%= @projects.size %></h5>
+  </div>
+
+  <% if !@projects.empty? %>
+    <div class="mt-3 mb-3">
+      <h5>Lista de proyectos</h5>
+      <% @projects.each do |p| %>
+        <h6>Nombre de proyecto  <%= p.name %></h6>
+        <% p.instances.each do |i| %>
+          <p>Protocolo <%= i.protocol.name %><% if !i.score.blank? %> - nota <%= i.score %><% end %></p>
+        <% end %>
+        <br>
+      <% end %>
+    </div>
+  <% end %>
+</div>

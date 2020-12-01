@@ -26,7 +26,7 @@ def home_page
   #         #-enviar tambien proyectId y protocolId o solo instanceid
           apim.setResponsable jsession,apiToken,cookie,value["id"],4 # => walter.bates #@user.id  #hay que conseguir los tokens y las cookies
           auxInstance=apim.getVariable value["caseId"], cookie, "actInstance"
-          aux["instance"] = JSON.parse(JSON.parse(auxInstance.to_json)["body"])["value"]
+          aux["instance"] = Instance.find(JSON.parse(JSON.parse(auxInstance.to_json)["body"])["value"].to_i)
           aux["activityId"] = value["id"]
           aux["caseId"] = value["caseId"]
           @listaMostrar.append(aux)
@@ -124,7 +124,7 @@ end
     aux1 = apim.finishActivity jsession, apiToken, cookie, caseId	# caseId
     apim.setJefe jsession,apiToken,cookie,caseId,current_user.id
 
-        format.html { redirect_to "/index", notice: paramsAux.gsub("=>",":") } #paramsAux.gsub("=>",":")
+        format.html { redirect_to "/index", notice: "" } #paramsAux.gsub("=>",":")
         # format.html { redirect_to @project, notice: JSON.parse(@aux.headers["set-cookie"]) }
         format.json { render :show, status: :created, location: @project }
       else
@@ -187,7 +187,7 @@ end
     end
   end
 
-def consulta1
+def projectsWithAprovedProtocolsRunning
   apim = ApiManagement.new
   cookie = session[:cookie]
 
@@ -222,6 +222,39 @@ def projectWithCurrentProtocolDelayed
     end
   }
   # render json: @delayed
+end
+
+def auxiliar
+  apim = ApiManagement.new
+  cookie = session[:cookie]
+
+  @running=apim.getRunningCases cookie
+  ids=[]
+  @running.each { |value|
+    resp=apim.getVariable value["id"], cookie, 'projectId'
+    ids.append(JSON.parse((JSON.parse(resp.to_json))["body"])["value"].to_i)
+  }
+  projects=Project.all
+  # projects=projects.select{|act| !ids.include?(act.id) and act.instances.all{|act| act.score.nil? }}
+  projectsids=projects.collect{ |act| act.id }
+  aux = projectsids-ids
+  return Project.find(aux)  #protocolos archivados
+  # projects.collect{|a| a.instances}
+end
+
+def projectsFinishedWithAverageGreaterEqual5
+  projects=self.auxiliar
+  projects=projects.select{|act| act.instances.all?{|act| act.score.present? }  }
+  # aux=projects.collect{|a| a.instances }
+  @projects = projects.select{|proj| (proj.instances.size>0) and (proj.instances.inject(0){|sum,e| sum + e.score }/proj.instances.size) >=5 }
+  # return result
+  # render json: projects.collect{|a| a.instances }.flatten #finalizados y que no tienen score nil
+end
+
+def incompletedArchivedProject
+  projects=self.auxiliar
+  @projects=projects.select{|act| act.instances.any?{|act| act.score.nil? }  }
+  # render json:@projects#.collect{|a| a.instances }
 end
 
   private

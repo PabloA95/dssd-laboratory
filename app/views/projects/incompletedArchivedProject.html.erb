@@ -1,0 +1,14 @@
+<div class="col-5 mx-auto mt-3">
+  <div class="card bg-dark text-">
+    <h5>Cantidad de proyectos finalizados cancelados sin terminar de ejecutar los protocolos: <%= @projects.size %></h5>
+  </div>
+
+  <br><br>
+  <div>
+    <h6>Lista de proyectos</h6>
+    <br>
+    <% @projects.each do |p| %>
+      <p>Proyecto <%= p.name %></p>
+    <% end %>
+  </div>
+</div>

@@ -1,11 +1,17 @@
-Protocolos en ejecucion: <%= @running.size %>
-<br>
-Protocolos en ejecucion con el protocolo actual atrasado <%= @delayed.size %>
+<div class="col-10 mx-auto mt-3">
+  <div class="card bg-dark text-">
+    <h5>Protocolos en ejecucion: <%= @running.size %></h5>
+    <h5>Protocolos en ejecucion con el protocolo actual atrasado: <%= @delayed.size %></h5>
+  </div>
 
-<% @delayed.each do |i| %>
-    <br>
-    <h3>Nombre de proyecto  <%= i.project.name %></h3>
-    <h5>Nombre de protocolo  <%= i.protocol.name %></h5>
-    -----------------------------
-    <br>
-<% end %>
+  <% if !@delayed.empty? %>
+    <div class="mt-3 mb-3">
+      <h4>Lista de proyectos</h4>
+      <br>
+      <% @delayed.each do |i| %>
+        <h6>Proyecto  <%= i.project.name %> - protocolo  <%= i.protocol.name %> - fin estimado  <%= i.end_date %></h6>
+        <br>
+      <% end %>
+    </div>
+  <% end %>
+</div>

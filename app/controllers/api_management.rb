@@ -134,8 +134,6 @@ class ApiManagement < ApplicationController
     )
     aux = conn.get()
 return aux
-    # return JSON.parse((JSON.parse(aux.to_json))["body"])["value"]
-    # return aux #JSON.parse((JSON.parse(aux.to_json))["body"])[0]["value"].to_i
   end
 
   def getVariable caseId, cookie, varName
@@ -162,15 +160,6 @@ return aux
   end
 
   def setResponsable jsession,apiToken,cookie,activityId,responsable
-    # conn = Faraday.new(
-    #   url: 'http://localhost:8080/bonita/API/bpm/caseVariable/'+caseId.to_s+'/actResponsable',
-    #   headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
-    # )
-    # aux='{"value":'+responsable.to_s+', "type": "java.lang.String"}'
-    # resp = conn.put() do |req|
-    #   req.body = aux
-    # end
-    # resp
     conn = Faraday.new(
       url: 'http://localhost:8080/bonita/API/bpm/userTask/'+activityId,
       headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
