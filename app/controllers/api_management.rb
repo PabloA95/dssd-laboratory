@@ -2,7 +2,7 @@ require 'json'
 
 class ApiManagement < ApplicationController
 
-  def loginBonita
+# API cloud
 
   def loginHeroku
     conn = Faraday.new(
@@ -15,16 +15,20 @@ class ApiManagement < ApplicationController
   end
 
   def createProtocol token, name, activities
-    tkn = 'Bearer ', token 
+    tkn = 'Bearer '+ token 
     conn = Faraday.new(
       url: 'https://remote-protocol.herokuapp.com/protocols',
-      params: {"nombre":name, "actividades":activities, "duracion":5},
+      params: {"nombre":name, "actividades":activities, "duracion":"5"},
       headers: {'Content-Type' => 'application/json','Authorization' => tkn}
     )
     resp = conn.post()
     return resp
   end
     
+
+
+# API Bonita
+
   def loginBonita
     conn = Faraday.new(
       url: 'http://localhost:8080/bonita/loginservice',
@@ -34,7 +38,6 @@ class ApiManagement < ApplicationController
     resp = conn.post()
     return resp
   end
-
 
 
   def assembleCookie auxJson
@@ -99,15 +102,12 @@ class ApiManagement < ApplicationController
     )
     aux = conn.get()
     return aux
-    # return JSON.parse((JSON.parse(aux.to_json))["body"])[0]["id"]
-
   end
 
   def finishActivity jsession, apiToken, cookie, caseId #finishTask???
     # curl -b saved_cookies.txt -X PUT --url 'http://localhost:8080/bonita/API/bpm/userTask/180008'
     # -v -d '{"assigned_id" : "4","state":"completed"}'
     # --header 'X-Bonita-API-Token:'$bbb --header 'JSESSIONID:'$aaa --header 'Content-Type:"application/json"'
-# 220010
     response = self.getActualActivity cookie, caseId
     activityId = JSON.parse(JSON.parse(response.to_json)["body"])[0]["id"]
 
@@ -116,7 +116,6 @@ class ApiManagement < ApplicationController
       headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
     )
     resp = conn.put() do |req|
-      # aux='{"assigned_id" : "###","state":"completed"}'
       req.body = '{"assigned_id" : "4","state":"completed"}' # Revisar lo de asignar el responsable
     end
     resp
@@ -132,8 +131,6 @@ class ApiManagement < ApplicationController
     )
     conn.get()
   end
-
-##################################################################################
 
   def getActivitiesList cookie, name
     # curl -b saved_cookies.txt -X GET
