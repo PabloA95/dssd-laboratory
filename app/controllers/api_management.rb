@@ -4,28 +4,28 @@ class ApiManagement < ApplicationController
 
   def loginBonita
 
-    def loginHeroku
-
+  def loginHeroku
     conn = Faraday.new(
       url: 'https://remote-protocol.herokuapp.com/login',
       params: {"name":"admin","password":"1234"},
       headers: {'Content-Type' => 'application/json'}
       )
-      resp = conn.post()
-      return resp
-    end
+    resp = conn.post()
+    return resp
+  end
 
-    def createProtocol token, name, activities
-      tkn = 'Bearer ', token 
-      conn = Faraday.new(
-        url: 'https://remote-protocol.herokuapp.com/protocols',
-        params: {"nombre":name, "actividades":activities, "duracion":5},
-        headers: {'Content-Type' => 'application/json','Authorization' => tkn}
-      )
-      resp = conn.post()
-      return resp
-    end
-
+  def createProtocol token, name, activities
+    tkn = 'Bearer ', token 
+    conn = Faraday.new(
+      url: 'https://remote-protocol.herokuapp.com/protocols',
+      params: {"nombre":name, "actividades":activities, "duracion":5},
+      headers: {'Content-Type' => 'application/json','Authorization' => tkn}
+    )
+    resp = conn.post()
+    return resp
+  end
+    
+  def loginBonita
     conn = Faraday.new(
       url: 'http://localhost:8080/bonita/loginservice',
       params: {"username":"walter.bates","password":"bpm","redirect":"false","redirectURL":""},

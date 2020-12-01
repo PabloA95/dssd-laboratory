@@ -33,11 +33,13 @@ class ProtocolsController < ApplicationController
       if @protocol.save
         #params['protocol']['activity']
         aux=[]
+        activities=[]
         params['protocol']['activity'].each { |act|
           aux.append(act)
           @activity = Activity.new
           @activity.name=act[1] #buscar forma mas linda
           @activity.protocol=@protocol
+          activities.append(@activity.name)
           # @activity.protocol_id=@protocol.id
           # @activity.protocol=@protocol
           aux.append(@activity)
@@ -46,10 +48,10 @@ class ProtocolsController < ApplicationController
 ##      ##########Crear protocolos en heroku too
 
         apim = ApiManagement.new
-        token = apim.loginHeroku
-        tkn = token.body()
-        parsedTkn = JSON.parse(tkn)
-        apim.createProtocol parsedTkn, params["protocol"]["name"], params['protocol']['activity']
+        response = apim.loginHeroku
+        token = response.body()
+        parsedTkn = JSON.parse(token)
+        apim.createProtocol parsedTkn["token"], @protocol.name , activities.join(",")
 
 ##      ##########
         format.html { redirect_to @protocol, notice: aux }
