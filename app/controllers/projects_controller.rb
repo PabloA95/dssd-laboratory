@@ -11,7 +11,7 @@ def home_page
   jsession = session[:jsession]
   apiToken = session[:apiToken]
   cookie = session[:cookie]
-
+aux=[]
   @listaMostrar=[]
   if (current_user.has_role? :responsable)
     lista = apim.getActivitiesList cookie, "Ejecucion local" #revisar si se puede pasar el id para que filtre segun la variable de proceso
@@ -20,7 +20,7 @@ def home_page
         responsable = apim.getResponsableForCase value["caseId"], cookie  #No lo encuentra poque no lo definimos
         # responsable = apim.getVariable value["caseId"], cookie, "actResponsable"
         responsableId = JSON.parse(JSON.parse(responsable.to_json)["body"])["value"]
-
+        aux.append(responsableId)
         if (responsableId.to_i==@user.id)
           aux={}
   #         #-enviar tambien proyectId y protocolId o solo instanceid
@@ -48,6 +48,7 @@ def home_page
         end
       }
   end
+  # render json: aux
 end
 
 
@@ -121,7 +122,7 @@ end
 
     aux1 = apim.setProject jsession, apiToken, cookie, caseId, @project.id
     aux1 = apim.setVariable jsession, apiToken, cookie, caseId, paramsAux.gsub("=>",":") #params["params"].to_json.to_s#paramsAux
-    aux1 = apim.finishActivity jsession, apiToken, cookie, caseId	# caseId
+    aux1 = apim.finishActivity jsession, apiToken, cookie, caseId, current_user.bonitaId	# caseId
     apim.setJefe jsession,apiToken,cookie,caseId,current_user.id
 
         format.html { redirect_to "/index", notice: "" } #paramsAux.gsub("=>",":")
@@ -159,7 +160,7 @@ def resolver
   cookie = session[:cookie]
 
   apim.setDecision jsession,apiToken,cookie,params["caseId"],params["decision"]
-  aux1 = apim.finishActivity jsession, apiToken, cookie, params["caseId"]
+  aux1 = apim.finishActivity jsession, apiToken, cookie, params["caseId"], current_user.bonitaId
   redirect_to "http://localhost:3000/index"
 end
 

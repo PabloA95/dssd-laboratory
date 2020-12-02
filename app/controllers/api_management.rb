@@ -15,24 +15,24 @@ class ApiManagement < ApplicationController
   end
 
   def createProtocol token, name, activities
-    tkn = 'Bearer '+ token 
+    tkn = 'Bearer '+ token
     conn = Faraday.new(
       url: 'https://remote-protocol.herokuapp.com/protocols',
-      params: {"nombre":name, "actividades":activities, "duracion":"5"},
+      params: {"nombre":name, "actividades":activities, "duracion":"3"},
       headers: {'Content-Type' => 'application/json','Authorization' => tkn}
     )
     resp = conn.post()
     return resp
   end
-    
+
 
 
 # API Bonita
 
-  def loginBonita
+  def loginBonita user,password
     conn = Faraday.new(
       url: 'http://localhost:8080/bonita/loginservice',
-      params: {"username":"walter.bates","password":"bpm","redirect":"false","redirectURL":""},
+      params: {"username":user,"password":password,"redirect":"false","redirectURL":""},
       headers: {'Content-Type' => 'application/x-www-form-urlencoded'}
     )
     resp = conn.post()
@@ -104,7 +104,7 @@ class ApiManagement < ApplicationController
     return aux
   end
 
-  def finishActivity jsession, apiToken, cookie, caseId #finishTask???
+  def finishActivity jsession, apiToken, cookie, caseId, userId #finishTask???
     # curl -b saved_cookies.txt -X PUT --url 'http://localhost:8080/bonita/API/bpm/userTask/180008'
     # -v -d '{"assigned_id" : "4","state":"completed"}'
     # --header 'X-Bonita-API-Token:'$bbb --header 'JSESSIONID:'$aaa --header 'Content-Type:"application/json"'
@@ -116,7 +116,7 @@ class ApiManagement < ApplicationController
       headers: {'Content-Type' => 'application/json','X-Bonita-API-Token'=>apiToken,'JSESSIONID'=>jsession, 'Cookie'=>cookie}
     )
     resp = conn.put() do |req|
-      req.body = '{"assigned_id" : "4","state":"completed"}' # Revisar lo de asignar el responsable
+      req.body = '{"assigned_id":"'+userId.to_s+'","state":"completed"}' # Revisar lo de asignar el responsable
     end
     resp
     # JSON.parse((JSON.parse(response.to_json))["body"])[0]["id"]

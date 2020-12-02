@@ -54,7 +54,7 @@
       <div class="card bg-secondary text-white mb-3 p-2">
         <!-- bg-secondary o dark -->
         <h5><%= p.name %></h5>
-        <h6><% if !p.local %>Se ejecuta localmente<% else %>Se ejecuta remotamente<% end %></h6>
+        <h6><% if p.local %>Se ejecuta localmente<% else %>Se ejecuta remotamente<% end %></h6>
         <div class="form-check mt-1">
           <label for="params[<%= p.id %>][added]">Ejecutar</label>
           <input type="checkbox" name="params[<%= p.id %>][added]">
@@ -70,10 +70,11 @@
         <label for="params[<%= p.id %>][user]">Responsable</label>
         <select class="" name="params[<%= p.id %>][user]">
           <% @users.each do |u| %>
-            <option value="<%= u.id %>"><%= u.email %></option>
+            <% if u.has_role? :responsable %><option value="<%= u.id %>"><%= u.email %></option><% end %>
           <% end %>
         </select>
         <input type="text" name="params[<%= p.id %>][protocol]" value="<%= p.id %>" hidden>
+        <input type="text" name="params[<%= p.id %>][bonitaId]" value="<%= p.bonitaId %>" hidden>
         <input type="text" name="params[<%= p.id %>][local]" value="<%if p.local==true %>1<% else %>0<% end %>" hidden>
         <label for="params[<%= p.id %>][orden]">Orden</label>
         <input type="number" name="params[<%= p.id %>][orden]" min="0" class="form-control">

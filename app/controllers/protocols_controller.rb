@@ -27,33 +27,34 @@ class ProtocolsController < ApplicationController
   # POST /protocols.json
   def create
     @protocol = Protocol.new(protocol_params)
-
+    # @protocol.bonitaId = @protocol.id
     respond_to do |format|
       # if true
+
       if @protocol.save
         #params['protocol']['activity']
-        aux=[]
         activities=[]
         params['protocol']['activity'].each { |act|
-          aux.append(act)
           @activity = Activity.new
           @activity.name=act[1] #buscar forma mas linda
           @activity.protocol=@protocol
           activities.append(@activity.name)
           # @activity.protocol_id=@protocol.id
           # @activity.protocol=@protocol
-          aux.append(@activity)
           @activity.save
          }
-
+@protocol.update(:bonitaId => @protocol.id)
       ##########Crear protocolos en heroku too
       if (!@protocol.local)
-        
+
         apim = ApiManagement.new
         response = apim.loginHeroku
         token = response.body()
         parsedTkn = JSON.parse(token)
-        apim.createProtocol parsedTkn["token"], @protocol.name , activities.join(",")
+        resp = apim.createProtocol parsedTkn["token"], @protocol.name , activities.join(",")
+        id = resp.body()
+        parsedId = JSON.parse(id)
+        @protocol.update(:bonitaId => parsedId["id"])
       end
       ##########
 

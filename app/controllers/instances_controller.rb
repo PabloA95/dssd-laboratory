@@ -28,7 +28,7 @@ class InstancesController < ApplicationController
     cookie = session[:cookie]
 
     aux1 = apim.setScore jsession, apiToken, cookie, params[:caseId], (total+cant-1)/cant
-    aux1 = apim.finishActivity jsession, apiToken, cookie, params[:caseId]
+    aux1 = apim.finishActivity jsession, apiToken, cookie, params[:caseId], current_user.bonitaId
     redirect_to "http://localhost:3000/index"
   end
 

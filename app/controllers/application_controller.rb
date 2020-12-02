@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
 
   def after_sign_in_path_for(resource)
         apim = ApiManagement.new
-        respuestaLogin = apim.loginBonita
+        respuestaLogin = apim.loginBonita current_user.bonitaUser, current_user.bonitaPassword
         formatearJSONLogin = respuestaLogin.headers["set-cookie"].split(/,|;/).map {|aux| aux.gsub(' ','').split('=')}
         hashedLogin = Hash[formatearJSONLogin.map {|key, value| [key, value]}]
 

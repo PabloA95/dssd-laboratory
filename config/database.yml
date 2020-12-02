@@ -23,7 +23,7 @@ default: &default
 
 development:
   <<: *default
-  database: laboratory_development1
+  database: laboratory_desarrollo
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
