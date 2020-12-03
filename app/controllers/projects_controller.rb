@@ -11,7 +11,7 @@ def home_page
   jsession = session[:jsession]
   apiToken = session[:apiToken]
   cookie = session[:cookie]
-aux=[]
+
   @listaMostrar=[]
   if (current_user.has_role? :responsable)
     lista = apim.getActivitiesList cookie, "Ejecucion local" #revisar si se puede pasar el id para que filtre segun la variable de proceso
@@ -20,11 +20,11 @@ aux=[]
         responsable = apim.getResponsableForCase value["caseId"], cookie  #No lo encuentra poque no lo definimos
         # responsable = apim.getVariable value["caseId"], cookie, "actResponsable"
         responsableId = JSON.parse(JSON.parse(responsable.to_json)["body"])["value"]
-        aux.append(responsableId)
+        # aux.append(responsableId) #####
         if (responsableId.to_i==@user.id)
           aux={}
   #         #-enviar tambien proyectId y protocolId o solo instanceid
-          apim.setResponsable jsession,apiToken,cookie,value["id"],4 # => walter.bates #@user.id  #hay que conseguir los tokens y las cookies
+          apim.setResponsable jsession,apiToken,cookie,value["id"], current_user.bonitaId # => walter.bates #@user.id  #hay que conseguir los tokens y las cookies
           auxInstance=apim.getVariable value["caseId"], cookie, "actInstance"
           aux["instance"] = Instance.find(JSON.parse(JSON.parse(auxInstance.to_json)["body"])["value"].to_i)
           aux["activityId"] = value["id"]

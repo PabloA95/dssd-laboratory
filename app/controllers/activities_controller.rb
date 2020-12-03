@@ -1,6 +1,7 @@
 class ActivitiesController < ApplicationController
   before_action :set_activity, only: [:show, :edit, :update, :destroy]
-
+  before_action :authenticate_user!
+  
   # GET /activities
   # GET /activities.json
   def index
