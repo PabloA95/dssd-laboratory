@@ -1,5 +1,5 @@
 <div class="col-5 mx-auto">
-  <%= form_with(model: project, local: true) do |form| %>
+  <%= form_with(model: project, local: true, :html => { :onsubmit => "return validation();", :onclick => "enableButton();" } ) do |form| %>
     <% if project.errors.any? %>
       <div id="error_explanation">
         <h2><%= pluralize(project.errors.count, "error") %> prohibited this project from being saved:</h2>
@@ -14,39 +14,13 @@
 
     <div class="field m-4">
       <%= form.label :name, 'Nombre' %>
-      <%= form.text_field :name, :class => "form-control" %>
+      <%= form.text_field :name, :class => "form-control", required: true %>
     </div>
 
     <div class="field">
       <%= form.label :end_date, "Fecha de fin" %>
       <%= form.datetime_select :end_date %>
     </div>
-
-  <%#  <div class="field">
-      <h3>Seleccionar protocolos</h3>
-      <% @protocols.each do |p| %->
-        <div class="card bg-secondary text-white mb-3 p-2">
-          <!-- bg-secondary o dark -->
-          <h5><%= p.name %-></h5>
-          <div class="form-check">
-            <label for="added[<%= p.id %->]">Ejecutar</label>
-            <input type="checkbox" name="added[<%= p.id %->]">
-          </div>
-          <label for="user[<%= p.id %->]">Responsable</label>
-          <select class="" name="user[<%= p.id %->]">
-            <% @users.each do |u| %->
-              <option value="<%= u.id %->"><%= u.email %-></option>
-            <% end %->
-          </select>
-        <%#  <input type="text" name="user[<%= p.id %->]" class="form-control"> %->
-          <!-- <label for="score">Es local?</label> -->
-          <input type="text" name="local[<%= p.id %->]" value="<%if p.local==true %->1<% else %->0<% end %->" hidden>
-          <label for="orden[<%= p.id %->]">Orden</label>
-          <input type="number" name="orden[<%= p.id %->]" min="0" class="form-control">
-        </div>
-      <% end %->
-    </div> %>
-
 
   <div class="field">
     <h3>Seleccionar protocolos</h3>
@@ -57,18 +31,18 @@
         <h6><% if p.local %>Se ejecuta localmente<% else %>Se ejecuta remotamente<% end %></h6>
         <div class="form-check mt-1">
           <label for="params[<%= p.id %>][added]">Ejecutar</label>
-          <input type="checkbox" name="params[<%= p.id %>][added]">
+          <input type="checkbox" name="params[<%= p.id %>][added]" id="exec[<%= p.id %>]" class="validate">
         </div>
         <div class="form-check mt-1">
           <label for="params[<%= p.id %>][start_date]">Fecha estimada de inicio del protocolo</label>
-          <input type="datetime-local" name="params[<%= p.id %>][start_date]">
+          <input type="date" name="params[<%= p.id %>][start_date]" id="exec[<%= p.id %>]-start">
         </div>
         <div class="form-check mt-1">
           <label for="params[<%= p.id %>][end_date]">Fecha estimada de fin del protocolo</label>
-          <input type="datetime-local" name="params[<%= p.id %>][end_date]">
+          <input type="date" name="params[<%= p.id %>][end_date]" id="exec[<%= p.id %>]-end">
         </div>
         <label for="params[<%= p.id %>][user]">Responsable</label>
-        <select class="" name="params[<%= p.id %>][user]">
+        <select class="" name="params[<%= p.id %>][user]" id="exec[<%= p.id %>]-user">
           <% @users.each do |u| %>
             <% if u.has_role? :responsable %><option value="<%= u.id %>"><%= u.email %></option><% end %>
           <% end %>
@@ -77,15 +51,54 @@
         <input type="text" name="params[<%= p.id %>][bonitaId]" value="<%= p.bonitaId %>" hidden>
         <input type="text" name="params[<%= p.id %>][local]" value="<%if p.local==true %>1<% else %>0<% end %>" hidden>
         <label for="params[<%= p.id %>][orden]">Orden</label>
-        <input type="number" name="params[<%= p.id %>][orden]" min="0" class="form-control">
+        <input type="number" name="params[<%= p.id %>][orden]" min="0" class="form-control" id="exec[<%= p.id %>]-order">
       </div>
     <% end %>
   </div>
 
 
     <div class="actions">
-      <%= form.submit 'Crear', :class => 'btn btn-success my_button' %>
+      <%= form.submit 'Crear', :class => 'btn btn-success my_button', :id => "enviar" %>
     </div>
 
   <% end %>
+  <script type="text/javascript">
+    function validation(){
+      var completed=true
+      var matches = document.getElementsByClassName("validate");
+
+      var cant=0;
+      for (i = 0; i < matches.length; i++) {
+        // alert(matches[i].id);
+        var actual = document.getElementById(matches[i].id);
+        // alert(actual.checked);
+        if (actual.checked) {
+          cant=cant+1;
+          var actualStart = document.getElementById(matches[i].id+"-start");
+          var actualEnd   = document.getElementById(matches[i].id+"-end");
+          var actualUser  = document.getElementById(matches[i].id+"-user");
+          var actualOrder = document.getElementById(matches[i].id+"-order");
+          // alert(actualStart.value)
+
+          if (actualStart.value === null || actualStart.value === "") {completed=false;}
+          if (actualEnd.value === null   || actualEnd.value === "")   {completed=false;}
+          if (actualEnd.value<=actualStart.value) {completed=false; alert("La fecha de fin debe ser posterior a la fecha de inicio"); return completed;}
+          if (actualUser.value === null  || actualUser.value === "")  {completed=false;}
+          if (actualOrder.value === null || actualOrder.value === "") {completed=false;}
+        }
+      }
+      if (cant < 1) {
+        alert("Debe seleccionar al menos un protocolo");
+        return false;
+      }
+      if (!completed) {alert("Faltan completar informacion de los protocolos seleccionados")}
+
+      return completed;
+    }
+  </script>
+  <script type="text/javascript">
+    function enableButton(){
+      document.getElementById("enviar").disabled=false;
+    }
+  </script>
 </div>
