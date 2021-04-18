@@ -25,3 +25,9 @@ _Además de la ejecución propia del proceso de gestión de protocolos, el labor
 - Aplicación web que implemente las interfaces para cada una de las etapas del proceso e interactúe con el proceso de Bonita (this repository).
 - Servicios web para el inicio de los protocolos remotos, y su consulta de estado y resultado de evaluación. (Heroku, Platform.sh) (ver https://github.com/PabloA95/DSSD_remote_protocols)
 - Aplicación web que permita al personal jerárquico del Laboratorio, la evaluación, seguimiento y métricas de los procesos. (this repository)
+
+
+Mas info: 
+-arquitectura de la solucion en: Informe DSSD.pdf
+-esquema de la base de datos: db.png
+-dump de la base de datos: db_dump.sql
