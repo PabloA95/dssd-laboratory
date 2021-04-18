@@ -27,7 +27,7 @@ _Además de la ejecución propia del proceso de gestión de protocolos, el labor
 - Aplicación web que permita al personal jerárquico del Laboratorio, la evaluación, seguimiento y métricas de los procesos. (this repository)
 
 
-Mas info: 
--arquitectura de la solucion en: Informe DSSD.pdf
--esquema de la base de datos: db.png
--dump de la base de datos: db_dump.sql
+_Mas info: _
+- arquitectura de la solucion en: Informe DSSD.pdf
+- esquema de la base de datos: db.png
+- dump de la base de datos: db_dump.sql
